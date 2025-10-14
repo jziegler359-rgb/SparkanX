@@ -1,3 +1,3 @@
 # SparkanX
-STEN IA Ftc team (The best one)
+Stem IA Ftc team (The best one)
 
