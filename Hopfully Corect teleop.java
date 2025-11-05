@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name="2025 TeleOp - Special Drivetrain (If-Else)", group="Linear Opmode")
+@TeleOp(name="2025 TeleOp - Drivetrain (Intake Always on)", group="Linear Opmode")
 public class Sparkanauts extends LinearOpMode {
 
     private DcMotor frontLeft, backLeft, frontRight, backRight;
@@ -49,43 +49,43 @@ public class Sparkanauts extends LinearOpMode {
             // ===== DRIVE CONTROL =====
             double y = -gamepad1.left_stick_y;   // forward/back
             double x = gamepad1.left_stick_x;   // turning
-            double strafe = gamepad1.right_stick_x; // strafing
+            double s = gamepad1.right_stick_x; // strafing
 
             // === FORWARD / BACKWARD ===
-            if (y > 0.1) {  // forward
+            if (y > 0.3) {  // forward
                 frontLeft.setPower(1);
                 frontRight.setPower(1);
                 backLeft.setPower(1);
                 backRight.setPower(1);
-            } else if (y < -0.1) { // backward
+            } else if (y < -0.3) { // backward
                 frontLeft.setPower(-1);
                 frontRight.setPower(-1);
                 backLeft.setPower(-1);
                 backRight.setPower(-1);
             } 
             // === TURNING ===
-            else if (x > 0.1) {  // turn right
+            else if (x > 0.3) {  // turn right
                 frontLeft.setPower(1);
                 backLeft.setPower(1);
                 frontRight.setPower(-1);
                 backRight.setPower(-1);
-            } else if (x < -0.1) { // turn left
+            } else if (x < -0.3) { // turn left
                 frontLeft.setPower(-1);
                 backLeft.setPower(-1);
                 frontRight.setPower(1);
                 backRight.setPower(1);
             } 
             // === STRAFING ===
-            else if (strafe > 0.1) {  // strafe right
-                frontLeft.setPower(strafe);
-                backLeft.setPower(-strafe);
-                frontRight.setPower(-strafe);
-                backRight.setPower(strafe);
-            } else if (strafe < -0.1) {  // strafe left
-                frontLeft.setPower(strafe);
-                backLeft.setPower(-strafe);
-                frontRight.setPower(-strafe);
-                backRight.setPower(strafe);
+            else if (s > 0.3) {  // strafe right
+                frontLeft.setPower(1);
+                backLeft.setPower(-1);
+                frontRight.setPower(-1);
+                backRight.setPower(1);
+            } else if (s < -0.3) {  // strafe left
+                frontLeft.setPower(-1);
+                backLeft.setPower(1);
+                frontRight.setPower(1);
+                backRight.setPower(-1);
             } 
             // === NEUTRAL ===
             else {
@@ -102,7 +102,7 @@ public class Sparkanauts extends LinearOpMode {
             if (gamepad1.left_bumper) {
                 flyWheel.setPower(0.75);
             } else if (gamepad1.left_trigger > 0.1) {
-                flyWheel.setPower(0.9);
+                flyWheel.setPower(1);
             } else {
                 flyWheel.setPower(0);
             }
@@ -110,13 +110,10 @@ public class Sparkanauts extends LinearOpMode {
             // ===== SERVO FLICK =====
             if (gamepad1.right_bumper) {
                 flyWheelServo.setPosition(0.27);
-                sleep(250);
+                sleep(300);
                 flyWheelServo.setPosition(0.49);
-                sleep(500);
+                sleep(700);
             }
-
-            telemetry.addData("Status", "Running");
-            telemetry.update();
         }
     }
 }
