@@ -1,0 +1,105 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@TeleOp(name = "DriveTeleOp", group = "FTC")
+public class DriveTeleOp extends LinearOpMode {
+
+    // Drive motors
+    private DcMotor FLW, FRW, BLW, BRW;
+
+    // Subsystems
+    private IntakeTeleOp intake;
+    //private OuttakeServo outtake;
+    private OuttakeTeleOp outtake;
+    
+    double random = 1;
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        // ---------- DRIVETRAIN SETUP ----------
+        FRW = hardwareMap.get(DcMotor.class, "FRW");
+        FLW = hardwareMap.get(DcMotor.class, "FLW");
+        BRW = hardwareMap.get(DcMotor.class, "BRW");
+        BLW = hardwareMap.get(DcMotor.class, "BLW");
+
+        FRW.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FLW.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BRW.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BLW.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        FRW.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FLW.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BRW.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BLW.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Directions: adjust if needed for your robot
+        FRW.setDirection(DcMotor.Direction.REVERSE);
+        BRW.setDirection(DcMotor.Direction.FORWARD);
+        FLW.setDirection(DcMotor.Direction.FORWARD);
+        BLW.setDirection(DcMotor.Direction.REVERSE);
+
+        // ---------- SUBSYSTEMS ----------
+        intake = new IntakeTeleOp(hardwareMap);
+        outtake = new OuttakeTeleOp(hardwareMap);
+        
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+
+            // ----- Tank Drive (gamepad1) -----
+            double leftPower = -gamepad1.left_stick_y;
+            double rightPower = -gamepad1.right_stick_y;
+           
+
+            FLW.setPower(leftPower);
+            BLW.setPower(leftPower);
+            FRW.setPower(rightPower);
+            BRW.setPower(rightPower);
+
+            // ----- Intake (gamepad2 triggers) -----
+            if (gamepad2.right_trigger > 0.1) {
+                intake.in();
+            } else if (gamepad2.left_trigger > 0.1) {
+                intake.out();
+            } else {
+                intake.stop();
+            }
+            
+            // ----- outtake (gamepad2 triggers) -----
+            if (gamepad2.right_bumper) {
+                outtake.in();
+            } else if (gamepad2.left_bumper) {
+                outtake.out();
+            } else {
+                outtake.stop();
+            }
+
+
+            // ----- Outtake servo (gamepad2 buttons) -----
+            // A = intake/receive, B = dump, X = stow
+            //if (gamepad2.a) {
+                //outtake.setIntakePosition();
+            //} else if (gamepad2.b) {
+               // outtake.setDumpPosition();
+            //} else if (gamepad2.x) {
+               // outtake.setStowPosition();
+            //}
+
+            // ----- Telemetry -----
+            telemetry.addData("Left Power", leftPower);
+            telemetry.addData("Right Power", rightPower);
+            //telemetry.addData("Outtake Pos", outtake.getPosition());
+            telemetry.addData("Intake In (RT)", gamepad2.right_trigger);
+            telemetry.addData("Intake Out (LT)", gamepad2.left_trigger);
+            telemetry.update();
+        }
+    }
+}
